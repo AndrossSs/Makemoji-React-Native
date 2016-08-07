@@ -33,7 +33,7 @@ class MakeMojiReactNative extends Component {
         <MakeMojiTextInput style={styles.moji} onSendPressed={this.log} horizontal={true}/>
 
           <Text style={styles.instructions}>
-              below
+              below3
           </Text>
       </View>
     );
