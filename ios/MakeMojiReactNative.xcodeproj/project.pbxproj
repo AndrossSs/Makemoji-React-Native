@@ -25,6 +25,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		D004980EC54623979C94BAF3 /* libPods-MakeMojiReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D97EC25AACE4F8B25053184D /* libPods-MakeMojiReactNative.a */; };
 		F8C10C0F1D5B8CC500CC9BC8 /* RCTMojiinputLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C10C0E1D5B8CC500CC9BC8 /* RCTMojiinputLayout.m */; };
+		F8C10C301D5C68C600CC9BC8 /* RCTMoji.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C10C2F1D5C68C600CC9BC8 /* RCTMoji.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,6 +134,8 @@
 		D97EC25AACE4F8B25053184D /* libPods-MakeMojiReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MakeMojiReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93DDF76631984CDDDE6DC97 /* Pods-MakeMojiReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MakeMojiReactNative.release.xcconfig"; path = "Pods/Target Support Files/Pods-MakeMojiReactNative/Pods-MakeMojiReactNative.release.xcconfig"; sourceTree = "<group>"; };
 		F8C10C0E1D5B8CC500CC9BC8 /* RCTMojiinputLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMojiinputLayout.m; sourceTree = "<group>"; };
+		F8C10C241D5C655E00CC9BC8 /* RCTMoji.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTMoji.h; sourceTree = "<group>"; };
+		F8C10C2F1D5C68C600CC9BC8 /* RCTMoji.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMoji.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +252,8 @@
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				F8C10C0E1D5B8CC500CC9BC8 /* RCTMojiinputLayout.m */,
+				F8C10C241D5C655E00CC9BC8 /* RCTMoji.h */,
+				F8C10C2F1D5C68C600CC9BC8 /* RCTMoji.m */,
 			);
 			name = MakeMojiReactNative;
 			sourceTree = "<group>";
@@ -619,6 +624,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8C10C301D5C68C600CC9BC8 /* RCTMoji.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				F8C10C0F1D5B8CC500CC9BC8 /* RCTMojiinputLayout.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
