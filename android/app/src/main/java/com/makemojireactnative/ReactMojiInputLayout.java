@@ -1,35 +1,39 @@
 package com.makemojireactnative;
 
-import android.support.annotation.Nullable;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.csslayout.CSSNode;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.LayoutShadowNode;
+import com.facebook.react.uimanager.ReactShadowNode;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.makemoji.mojilib.HyperMojiListener;
-import com.makemoji.mojilib.Moji;
 import com.makemoji.mojilib.MojiInputLayout;
+import com.makemoji.mojilib.MyMojiInputLayout;
+
+import java.lang.reflect.Method;
+
+import csslayout.MyShadowNode;
 
 /**
  * Created by s_baa on 8/6/2016.
  */
-public class ReactMojiInputLayout extends SimpleViewManager<MojiInputLayout> {
+public class ReactMojiInputLayout extends SimpleViewManager<MyMojiInputLayout> {
+    MyShadowNode node;
     @Override
     public String getName() {
         return "RCTMojiInputLayout";
     }
 
     @Override
-    protected MojiInputLayout createViewInstance(final ThemedReactContext reactContext) {
-        final MojiInputLayout mojiInputLayout = new MojiInputLayout(reactContext);
+    protected MyMojiInputLayout createViewInstance(final ThemedReactContext reactContext) {
+        final MyMojiInputLayout mojiInputLayout = new MyMojiInputLayout(reactContext);
         Log.d(getName(),"createviewinstance");
         mojiInputLayout.setSendLayoutClickListener(new MojiInputLayout.SendClickListener() {
             @Override
@@ -48,6 +52,7 @@ public class ReactMojiInputLayout extends SimpleViewManager<MojiInputLayout> {
             public void onClick(String url) {
                 WritableMap event = Arguments.createMap();
                 event.putString("url", url);
+                Log.d(getName(),"hypermoji click");
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                         mojiInputLayout.getId(),
                         "onHyperMojiClick",
@@ -65,12 +70,47 @@ public class ReactMojiInputLayout extends SimpleViewManager<MojiInputLayout> {
                 mojiInputLayout.invalidate();
                 mojiInputLayout.requestLayout();
                 mojiInputLayout.layout(mojiInputLayout.getLeft(),mojiInputLayout.getTop(),mojiInputLayout.getRight(),mojiInputLayout.getBottom());
-
-                Toast.makeText(mojiInputLayout.getContext(),"camera click",Toast.LENGTH_SHORT).show();
             }
             });
+
+        mojiInputLayout.setRnUpdateListener(new MojiInputLayout.RNUpdateListener() {
+
+            Method m;
+            @Override
+            public void needsUpdate() {
+                if (m==null)
+                {
+                    try{
+                        m = CSSNode.class.getDeclaredMethod("markHasNewLayout");
+                        m.setAccessible(true);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                if (node!=null) {
+                    if (node.hasNewLayout()) node.markLayoutSeen();
+                    ReactShadowNode parent = node.getParent();
+                    while (parent!=null){
+                        if (parent.hasNewLayout()) {
+                            try {
+                                m.invoke(parent);
+                            } catch (Exception e){e.printStackTrace();}
+                            parent.markLayoutSeen();
+                        }
+                        parent= parent.getParent();
+                    }
+                    node.markUpdated();
+                }
+                Log.d(getName(),"markUpdated");
+            }
+        });
+
         return mojiInputLayout;
     }
-
+    public LayoutShadowNode createShadowNodeInstance() {
+        node = new MyShadowNode();
+        return node;
+    }
 
 }

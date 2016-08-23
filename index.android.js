@@ -10,7 +10,9 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewPagerAndroid
+  ViewPagerAndroid,
+    TouchableNativeFeedback
+
 } from 'react-native';
 import MakeMojiTextInput from './MakeMojiRN/MakeMojiTextInput'
 import TimerMixin from 'react-timer-mixin';
@@ -31,7 +33,6 @@ class MakeMojiReactNative extends Component {
           Shake or press menu button for dev menu
         </Text>
         <MakeMojiTextInput style={styles.moji} onSendPressed={this.log} horizontal={true}/>
-
           <Text style={styles.instructions}>
               below3
           </Text>
