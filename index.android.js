@@ -41,6 +41,7 @@ class MakeMojiReactNative extends Component {
   }
   log(s){
     console.log("logging s");
+      var event = s.nativeEvent;
   }
   componentDidMount(){
     //this.animationTimeout();

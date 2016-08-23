@@ -53,6 +53,6 @@ public class MainApplication extends Application implements ReactApplication {
             .build();
     OkHttpClientProvider.replaceOkHttpClient(client);
 
-    Moji.initialize(this,"bfd3eea60abad87d378f87939ef3a116e8b23a35");
+    Moji.initialize(this,"940ced93abf2ca4175a4a865b38f1009d8848a58");
   }
 }

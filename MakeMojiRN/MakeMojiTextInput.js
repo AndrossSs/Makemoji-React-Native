@@ -5,15 +5,21 @@ import { requireNativeComponent, View } from 'react-native';
 class MakeMojiTextInput extends React.Component {
     constructor(props) {
         super(props);
-        this.onSendPressed = this._onSendPressed.bind(this);
         this.onCameraPressed = this._onCameraPressed.bind(this);
     }
-    _onSendPressed(event: Event) {
+   /* onSendPressed(event: Event) {
         if (!this.props.onSendPressed) {
             return;
         }
+        console.log("send pressed recieved");
         this.props.onSendPressed(event.nativeEvent.message);
-    }
+    }*/
+    onSendPressed: Function = (e) => {
+        console.log("send pressed recieved");
+        if (this.props.onSendPressed) {
+            this.props.onSendPressed(e);
+        }
+    };
     _onCameraPressed(event: Event) {
     if (!this.props.onCameraPressed) {
         return;
@@ -21,7 +27,7 @@ class MakeMojiTextInput extends React.Component {
     this.props.onCameraPressed(event.nativeEvent.message);
 }
     render() {
-        return <RCTMojiInputLayout {...this.props} onSendPressed={this._onSendPressed} onCameraPressed={this._onCameraPressed} />;
+        return <RCTMojiInputLayout {...this.props} onSendPressed={this.onSendPressed} onCameraPressed={this._onCameraPressed} />;
     }
     shouldComponentUpdate(nextProps,nextState){
         return true;
