@@ -11,20 +11,30 @@ import {
   Text,
   View,
   ViewPagerAndroid,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+ListView
 
 } from 'react-native';
 import MakeMojiTextInput from './MakeMojiRN/MakeMojiTextInput'
+import MakeMojiText from './MakeMojiRN/MakeMojiText'
 import TimerMixin from 'react-timer-mixin';
 
 class MakeMojiReactNative extends Component {
 
+    constructor(props){
+        super(props);
+
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {htmlMessages:[],
+    dataSource:ds.cloneWithRows([])};
+
+    }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
+        <MakeMojiText style={styles.welcome} selectable={true} html={'asdfasd'}>
           Welcome to React Native!
-        </Text>
+        </MakeMojiText>
         <Text style={styles.instructions}>
           To get started, edit index.android.js
         </Text>
@@ -32,16 +42,27 @@ class MakeMojiReactNative extends Component {
           Double tap R on your keyboard to reload,{'\n'}
           Shake or press menu button for dev menu
         </Text>
-        <MakeMojiTextInput style={styles.moji} onSendPressed={this.log} horizontal={true}/>
+          <ListView style={{flex:1,alignSelf:'stretch'}}
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData) => <MakeMojiText  style={styles.instructions} html={rowData}> </MakeMojiText>}
+          />
+        <MakeMojiTextInput style={styles.moji} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
           <Text style={styles.instructions}>
               below3
           </Text>
       </View>
     );
   }
+  sendPressed(sendObject){
+      var state = this.state;
+      var htmlMessages = [...this.state.htmlMessages,sendObject.nativeEvent.html];
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      this.setState({htmlMessages:htmlMessages,dataSource:ds.cloneWithRows(htmlMessages)});
+  }
   log(s){
     console.log("logging s");
       var event = s.nativeEvent;
+      console.log('',event);
   }
   componentDidMount(){
     //this.animationTimeout();

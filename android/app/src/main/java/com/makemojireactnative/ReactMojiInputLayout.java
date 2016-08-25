@@ -20,6 +20,7 @@ import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.makemoji.mojilib.HyperMojiListener;
+import com.makemoji.mojilib.Moji;
 import com.makemoji.mojilib.MojiInputLayout;
 import com.makemoji.mojilib.MyMojiInputLayout;
 
@@ -46,12 +47,10 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
     @Override
     protected MyMojiInputLayout createViewInstance(final ThemedReactContext reactContext) {
         final MyMojiInputLayout mojiInputLayout = new MyMojiInputLayout(reactContext);
-        Log.d(getName(),"createviewinstance");
+
         mojiInputLayout.setSendLayoutClickListener(new MojiInputLayout.SendClickListener() {
             @Override
             public boolean onClick(final String html, Spanned spanned) {
-                WritableMap event = Arguments.createMap();
-                event.putString("html", html);
                 eventDispatcher.dispatchEvent(new SendEvent(mojiInputLayout.getId(),html));
                 return true;
             }
@@ -59,26 +58,13 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         mojiInputLayout.setHyperMojiClickListener(new HyperMojiListener() {
             @Override
             public void onClick(String url) {
-                WritableMap event = Arguments.createMap();
-                event.putString("url", url);
-                Log.d(getName(),"hypermoji click");
-                reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                        mojiInputLayout.getId(),
-                        "onHyperMojiClick",
-                        event);
+                eventDispatcher.dispatchEvent(new HyperMojiEvent (mojiInputLayout.getId(),url));
             }
             });
         mojiInputLayout.setCameraButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WritableMap event = Arguments.createMap();
-                reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                        mojiInputLayout.getId(),
-                        "onCameraPressed",
-                        event);
-                mojiInputLayout.invalidate();
-                mojiInputLayout.requestLayout();
-                mojiInputLayout.layout(mojiInputLayout.getLeft(),mojiInputLayout.getTop(),mojiInputLayout.getRight(),mojiInputLayout.getBottom());
+                eventDispatcher.dispatchEvent(new CameraEvent(mojiInputLayout.getId()));
             }
             });
 
@@ -137,12 +123,15 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
     @Override
     public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.of(
-                SendEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onSendPressed")
-        );
+                SendEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onSendPress"),
+                HyperMojiEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onHyperMojiPress"),
+                CameraEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onCameraPress")
+
+                );
     }
     public static class SendEvent extends Event<SendEvent>{
         String html;
-        final static String EVENT_NAME = "onSendPressed";
+        final static String EVENT_NAME = "onSendPress";
         public SendEvent(int viewTag,String html){
             super(viewTag, SystemClock.uptimeMillis());
             this.html = html;
@@ -156,6 +145,42 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         public void dispatch(RCTEventEmitter rctEventEmitter) {
             WritableMap eventData = Arguments.createMap();
             eventData.putString("html", html);
+            eventData.putString("plainText", Moji.htmlToPlainText(html));
+            rctEventEmitter.receiveEvent(getViewTag(),getEventName(),eventData);
+        }
+    }
+    public static class HyperMojiEvent extends Event<HyperMojiEvent>{
+        String url;
+        final static String EVENT_NAME = "onHyperMojiPress";
+        public HyperMojiEvent(int viewTag,String url){
+            super(viewTag, SystemClock.uptimeMillis());
+            this.url = url;
+        }
+        @Override
+        public String getEventName() {
+            return EVENT_NAME;
+        }
+
+        @Override
+        public void dispatch(RCTEventEmitter rctEventEmitter) {
+            WritableMap eventData = Arguments.createMap();
+            eventData.putString("url", url);
+            rctEventEmitter.receiveEvent(getViewTag(),getEventName(),eventData);
+        }
+    }
+    public static class CameraEvent extends Event<CameraEvent>{
+        final static String EVENT_NAME = "onCameraPress";
+        public CameraEvent(int viewTag){
+            super(viewTag, SystemClock.uptimeMillis());
+        }
+        @Override
+        public String getEventName() {
+            return EVENT_NAME;
+        }
+
+        @Override
+        public void dispatch(RCTEventEmitter rctEventEmitter) {
+            WritableMap eventData = Arguments.createMap();
             rctEventEmitter.receiveEvent(getViewTag(),getEventName(),eventData);
         }
     }

@@ -5,38 +5,33 @@ import { requireNativeComponent, View } from 'react-native';
 class MakeMojiTextInput extends React.Component {
     constructor(props) {
         super(props);
-        this.onCameraPressed = this._onCameraPressed.bind(this);
     }
-   /* onSendPressed(event: Event) {
-        if (!this.props.onSendPressed) {
-            return;
-        }
-        console.log("send pressed recieved");
-        this.props.onSendPressed(event.nativeEvent.message);
-    }*/
-    onSendPressed: Function = (e) => {
-        console.log("send pressed recieved");
-        if (this.props.onSendPressed) {
-            this.props.onSendPressed(e);
+    onSendPress: Function = (e) => {
+        if (this.props.onSendPress) {
+            this.props.onSendPress(e);
         }
     };
-    _onCameraPressed(event: Event) {
-    if (!this.props.onCameraPressed) {
-        return;
-    }
-    this.props.onCameraPressed(event.nativeEvent.message);
-}
+    onCameraPress: Function = (e) => {
+        if (this.props.onCameraPress) {
+            this.props.onCameraPress(e);
+        }
+    };
+    onHyperMojiPress: Function = (e) => {
+        if (this.props.onHyperMojiPress) {
+            this.props.onHyperMojiPress(e);
+        }
+    };
+
     render() {
-        return <RCTMojiInputLayout {...this.props} onSendPressed={this.onSendPressed} onCameraPressed={this._onCameraPressed} />;
-    }
-    shouldComponentUpdate(nextProps,nextState){
-        return true;
+        return <RCTMojiInputLayout {...this.props} onHyperMojiPress={this.onHyperMojiPress}
+                                   onSendPress={this.onSendPress} onCameraPress={this.onCameraPress} />;
     }
 }
 MakeMojiTextInput.propTypes = {
     ...View.propTypes,
-    onSendPressed: React.PropTypes.func,
-    onCameraPressed: React.PropTypes.func
+    onSendPress: React.PropTypes.func,
+    onCameraPress: React.PropTypes.func,
+    onHyperMojiPress: React.PropTypes.func
 };
 
 module.exports = requireNativeComponent(`RCTMojiInputLayout`, MakeMojiTextInput);
