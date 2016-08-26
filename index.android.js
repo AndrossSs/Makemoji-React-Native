@@ -32,9 +32,9 @@ class MakeMojiReactNative extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <MakeMojiText style={styles.welcome} selectable={true} html={'asdfasd'}>
+        <Text style={styles.welcome} selectable={true}>
           Welcome to React Native!
-        </MakeMojiText>
+        </Text>
         <Text style={styles.instructions}>
           To get started, edit index.android.js
         </Text>
@@ -44,7 +44,7 @@ class MakeMojiReactNative extends Component {
         </Text>
           <ListView style={{flex:1,alignSelf:'stretch'}}
                     dataSource={this.state.dataSource}
-                    renderRow={(rowData) => <MakeMojiText onHyperMojiPress={this.log} style={styles.instructions} html={rowData}/>}
+                    renderRow={(rowData) => <MakeMojiText textSize={14.0} onHyperMojiPress={this.log} style={styles.instructions} html={rowData}/>}
           />
         <MakeMojiTextInput style={styles.moji} headerTextColor={'red'} minSendLength={0} alwaysShowEmojiBar={true} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
           <Text style={styles.instructions}>
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     color: '#333333',
       height:25,
     marginBottom: 5,
+      fontSize:20
   },
   moji:{
     flex:1,

@@ -2,6 +2,8 @@ package com.makemoji.mojilib;
 
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.util.TypedValue;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -12,18 +14,20 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.facebook.react.views.text.ReactTextShadowNode;
 import com.facebook.react.views.text.ReactTextView;
 import com.facebook.react.views.text.ReactTextViewManager;
 
 import java.util.Map;
 
+import csslayout.MyReactTextShadowNode;
 import csslayout.MyShadowNode;
 
 /**
  * Created by s_baa on 8/6/2016.
  */
 public class ReactMojiTextView extends ReactTextViewManager {
-    MyShadowNode node;
+    MyReactTextShadowNode node;
     EventDispatcher eventDispatcher;
     @Override
     public String getName() {
@@ -47,14 +51,29 @@ public class ReactMojiTextView extends ReactTextViewManager {
     }
     @ReactProp(name = "html")
     public void setHtml(ReactTextView view, @Nullable String html) {
-        if (html!=null)
-            Moji.setText(html,view,true);
+        if (html!=null) {
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX,node.getFontSize());
+            Moji.setText(html, view, true);
+        }
     }
     @ReactProp(name = "plaintext")
     public void setPlainText(ReactTextView view, @Nullable String plaintext) {
         if (plaintext!=null)
             Moji.setText(Moji.plainTextToSpanned(plaintext),view);
     }
+    @ReactProp(name = "textSize", defaultFloat=0f)
+    public void setTextSize(ReactTextView view, float textSize) {
+        Log.d(getName(),"text size " + textSize);
+        if (textSize!=0f)
+            view.setTextSize(textSize);
+    }
+
+    @Override
+    public ReactTextShadowNode createShadowNodeInstance() {
+        node = new MyReactTextShadowNode(false);
+        return node;
+    }
+
     @Override
     public void updateExtraData(ReactTextView view, Object extraData) {
 
