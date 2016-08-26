@@ -31,7 +31,20 @@ MakeMojiTextInput.propTypes = {
     ...View.propTypes,
     onSendPress: React.PropTypes.func,
     onCameraPress: React.PropTypes.func,
-    onHyperMojiPress: React.PropTypes.func
+    onHyperMojiPress: React.PropTypes.func,
+    cameraDrawable:React.PropTypes.string,
+    backspaceDrawable:React.PropTypes.string,
+    cameraVisible:React.PropTypes.bool,
+
+
+    buttonContainerDrawable:React.PropTypes.string,
+    topBarDrawable:React.PropTypes.string,
+    bottomPageDrawable:React.PropTypes.string,
+    phraseBgColor:React.PropTypes.string,
+    headerTextColor:React.PropTypes.string,
+
+    alwaysShowEmojiBar:React.PropTypes.bool,
+    minSendLength:React.PropTypes.number
 };
 
 module.exports = requireNativeComponent(`RCTMojiInputLayout`, MakeMojiTextInput);

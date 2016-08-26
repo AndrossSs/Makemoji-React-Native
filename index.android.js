@@ -44,9 +44,9 @@ class MakeMojiReactNative extends Component {
         </Text>
           <ListView style={{flex:1,alignSelf:'stretch'}}
                     dataSource={this.state.dataSource}
-                    renderRow={(rowData) => <MakeMojiText  style={styles.instructions} html={rowData}> </MakeMojiText>}
+                    renderRow={(rowData) => <MakeMojiText onHyperMojiPress={this.log} style={styles.instructions} html={rowData}/>}
           />
-        <MakeMojiTextInput style={styles.moji} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
+        <MakeMojiTextInput style={styles.moji} headerTextColor={'red'} minSendLength={0} alwaysShowEmojiBar={true} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
           <Text style={styles.instructions}>
               below3
           </Text>
@@ -54,13 +54,12 @@ class MakeMojiReactNative extends Component {
     );
   }
   sendPressed(sendObject){
-      var state = this.state;
+      console.log('send pressed', sendObject.nativeEvent);
       var htmlMessages = [...this.state.htmlMessages,sendObject.nativeEvent.html];
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       this.setState({htmlMessages:htmlMessages,dataSource:ds.cloneWithRows(htmlMessages)});
   }
   log(s){
-    console.log("logging s");
       var event = s.nativeEvent;
       console.log('',event);
   }
@@ -95,11 +94,12 @@ const styles = StyleSheet.create({
   instructions: {
     textAlign: 'center',
     color: '#333333',
+      height:25,
     marginBottom: 5,
   },
   moji:{
     flex:1,
-    height:300,
+    height:100,
     alignSelf: 'stretch',
   }
 });

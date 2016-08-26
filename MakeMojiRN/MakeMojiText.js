@@ -169,7 +169,9 @@ const MakeMojiText = React.createClass({
          */
         accessible: React.PropTypes.bool,
 
-        html: React.PropTypes.string
+        html: React.PropTypes.string,
+        plaintext: React.PropTypes.string,
+        onHyperMojiPress:React.PropTypes.func
     },
     getDefaultProps(): Object {
         return {

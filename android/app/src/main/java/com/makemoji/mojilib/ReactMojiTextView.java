@@ -1,35 +1,20 @@
-package com.makemojireactnative;
+package com.makemoji.mojilib;
 
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
-import android.text.Spanned;
-import android.util.Log;
-import android.view.View;
 
-import com.facebook.csslayout.CSSNode;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.uimanager.LayoutShadowNode;
-import com.facebook.react.uimanager.ReactShadowNode;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
-import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.facebook.react.views.text.ReactTextUpdate;
 import com.facebook.react.views.text.ReactTextView;
 import com.facebook.react.views.text.ReactTextViewManager;
-import com.facebook.react.views.text.TextInlineImageSpan;
-import com.makemoji.mojilib.HyperMojiListener;
-import com.makemoji.mojilib.Moji;
-import com.makemoji.mojilib.MojiInputLayout;
-import com.makemoji.mojilib.MyMojiInputLayout;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import csslayout.MyShadowNode;
@@ -44,17 +29,31 @@ public class ReactMojiTextView extends ReactTextViewManager {
     public String getName() {
         return "ReactMojiText";
     }
+    @Override
+    protected void addEventEmitters(ThemedReactContext reactContext, ReactTextView view) {
+        eventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
+    }
 
     @Override
     public ReactTextView createViewInstance(final ThemedReactContext reactContext) {
-      ReactTextView rtv =super.createViewInstance(reactContext);
+      final ReactTextView rtv =super.createViewInstance(reactContext);
+        rtv.setTag(com.makemojireactnative.R.id._makemoji_hypermoji_listener_tag_id, new HyperMojiListener() {
+            @Override
+            public void onClick(String url) {
+                eventDispatcher.dispatchEvent(new HyperMojiEvent (rtv.getId(),url));
+            }
+        });
         return rtv;
     }
     @ReactProp(name = "html")
     public void setHtml(ReactTextView view, @Nullable String html) {
-        Log.d(getName(),"setting html "+html);
         if (html!=null)
             Moji.setText(html,view,true);
+    }
+    @ReactProp(name = "plaintext")
+    public void setPlainText(ReactTextView view, @Nullable String plaintext) {
+        if (plaintext!=null)
+            Moji.setText(Moji.plainTextToSpanned(plaintext),view);
     }
     @Override
     public void updateExtraData(ReactTextView view, Object extraData) {

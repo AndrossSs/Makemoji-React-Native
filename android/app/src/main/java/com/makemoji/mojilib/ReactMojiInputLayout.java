@@ -1,6 +1,8 @@
-package com.makemojireactnative;
+package com.makemoji.mojilib;
 
+import android.graphics.Color;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
@@ -16,9 +18,11 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewGroupManager;
+import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.facebook.react.views.text.ReactTextView;
 import com.makemoji.mojilib.HyperMojiListener;
 import com.makemoji.mojilib.Moji;
 import com.makemoji.mojilib.MojiInputLayout;
@@ -42,6 +46,69 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
     @Override
     public String getName() {
         return "RCTMojiInputLayout";
+    }
+
+    @ReactProp(name = "cameraDrawable")
+    public void setCameraDrawable(MyMojiInputLayout view, @Nullable String drawableName) {
+        if (drawableName!=null)
+            view.cameraImageButton.setImageResource(
+                            view.getResources().getIdentifier(drawableName,"drawable",view.getContext().getPackageName()));
+    }
+    @ReactProp(name = "backspaceDrawable")
+    public void setBackspaceDrawable(MyMojiInputLayout view, @Nullable String drawableName) {
+        if (drawableName!=null)
+            view.backSpaceDrawableRes = view.getResources().getIdentifier(drawableName,"drawable",view.getContext().getPackageName());
+    }
+
+    @ReactProp(name = "cameraVisible", defaultBoolean = true)
+    public void setCameraVisibility(MyMojiInputLayout view,  boolean visible) {
+        view.setCameraVisibility(visible);
+    }
+
+    @ReactProp(name = "buttonContainerDrawable")
+    public void setButtonContainerDrawable(MyMojiInputLayout view, @Nullable String drawableName) {
+        if (drawableName!=null)
+            view.findViewById(R.id._mm_left_buttons).setBackgroundResource(
+                    view.getResources().getIdentifier(drawableName,"drawable",view.getContext().getPackageName()));
+    }
+    @ReactProp(name = "topBarDrawable")
+    public void setTopBarDrawable(MyMojiInputLayout view, @Nullable String drawableName) {
+        if (drawableName!=null)
+            view.findViewById(R.id._mm_horizontal_ll).setBackgroundResource(
+                    view.getResources().getIdentifier(drawableName,"drawable",view.getContext().getPackageName()));
+    }
+    @ReactProp(name = "bottomPageDrawable")
+    public void setBottomPageDrawable(MyMojiInputLayout view, @Nullable String drawableName) {
+        if (drawableName!=null) {
+            view.rv.setBackgroundResource(
+                    view.getResources().getIdentifier(drawableName, "drawable", view.getContext().getPackageName()));
+            view.getPageFrame().setBackgroundResource(
+                    view.getResources().getIdentifier(drawableName, "drawable", view.getContext().getPackageName()));
+        }
+    }
+
+    @ReactProp(name = "phraseBgColor")
+    public void setPhraseBgColor(MyMojiInputLayout view, @Nullable String color) {
+        if (color!=null){
+            view.phraseBgColor = Color.parseColor(color);
+        }
+    }
+    @ReactProp(name = "headerTextColor")
+    public void setHeaderTextColor(MyMojiInputLayout view, @Nullable String color) {
+        if (color!=null){
+            view.headerTextColor = Color.parseColor(color);
+        }
+    }
+
+    @ReactProp(name = "alwaysShowEmojiBar", defaultBoolean = false)
+    public void setAlwaysShowEmojiBar(MyMojiInputLayout view,  boolean show) {
+        view.tryAlwaysShowBar=show;
+        if (show)view.alwaysShowBar = show;
+    }
+    @ReactProp(name = "minSendLength", defaultInt = 0)
+    public void setMinSendLength(MyMojiInputLayout view,  int length) {
+        view.minimumSendLength = length;
+        if (length==0) view.sendLayout.setEnabled(view.editText.getText().length()>=length);
     }
 
     @Override
