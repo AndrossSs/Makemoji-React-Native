@@ -7,6 +7,7 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.makemoji.mojilib.Moji;
 import com.makemoji.mojilib.ReactMakeMojiTextInputManager;
 import com.makemoji.mojilib.ReactMojiInputLayout;
 import com.makemoji.mojilib.ReactMojiTextView;
@@ -23,6 +24,7 @@ class MakeMojiReactPackage implements ReactPackage {
 
     MakeMojiReactPackage(Application application){
         super();
+        Moji.initialize(application,"bfd3eea60abad87d378f87939ef3a116e8b23a35");
     }
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {

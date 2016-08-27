@@ -91,7 +91,7 @@ public class ReactMojiTextView extends ReactTextViewManager {
         String url;
         final static String EVENT_NAME = "onHyperMojiPress";
         public HyperMojiEvent(int viewTag,String url){
-            super(viewTag, SystemClock.uptimeMillis());
+            super(viewTag);
             this.url = url;
         }
         @Override

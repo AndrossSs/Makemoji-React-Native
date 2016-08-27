@@ -12,7 +12,8 @@ import {
   View,
   ViewPagerAndroid,
     TouchableNativeFeedback,
-ListView
+ListView,
+TextInput
 
 } from 'react-native';
 import MakeMojiTextInput from './MakeMojiRN/MakeMojiTextInput'
@@ -32,6 +33,7 @@ class MakeMojiReactNative extends Component {
   render() {
     return (
       <View style={styles.container}>
+          <TextInput/>
         <Text style={styles.welcome} selectable={true}>
           Welcome to React Native!
         </Text>
@@ -46,7 +48,7 @@ class MakeMojiReactNative extends Component {
                     dataSource={this.state.dataSource}
                     renderRow={(rowData) => <MakeMojiText textSize={14.0} onHyperMojiPress={this.log} style={styles.instructions} html={rowData}/>}
           />
-        <MakeMojiTextInput style={styles.moji} headerTextColor={'red'} minSendLength={0} alwaysShowEmojiBar={true} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
+        <MakeMojiTextInput style={styles.moji} minSendLength={0} alwaysShowEmojiBar={true} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
           <Text style={styles.instructions}>
               below3
           </Text>
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection:'column',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
@@ -100,7 +102,6 @@ const styles = StyleSheet.create({
   },
   moji:{
     flex:1,
-    height:100,
     alignSelf: 'stretch',
   }
 });

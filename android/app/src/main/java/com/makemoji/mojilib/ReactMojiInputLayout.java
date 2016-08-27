@@ -13,9 +13,12 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.LayoutShadowNode;
+import com.facebook.react.uimanager.NativeViewHierarchyManager;
 import com.facebook.react.uimanager.ReactShadowNode;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.UIBlock;
+import com.facebook.react.uimanager.UIImplementation;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -37,8 +40,36 @@ import csslayout.MyShadowNode;
  * Created by s_baa on 8/6/2016.
  */
 public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
-    MyShadowNode node;
     EventDispatcher eventDispatcher;
+    Method markNewLayout, getShadowNode;
+
+    public ReactMojiInputLayout(){
+        super();
+        if (markNewLayout == null) {
+            try {
+                markNewLayout = CSSNode.class.getDeclaredMethod("markHasNewLayout");
+                markNewLayout.setAccessible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try{
+        if (getShadowNode==null){
+            Class[] cArg = new Class[1];
+            cArg[0] = Integer.class;
+            Class c = UIImplementation.class;
+            Method [] methods = c.getDeclaredMethods();
+            Method m = methods[36];
+            Class [] params = m.getParameterTypes();
+            getShadowNode = UIImplementation.class.getDeclaredMethod("resolveShadowNode",int.class);
+            getShadowNode.setAccessible(true);
+        }
+        } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    }
+
     @Override
     public boolean needsCustomLayoutForChildren() {
         return true;
@@ -113,8 +144,11 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
 
     @Override
     protected MyMojiInputLayout createViewInstance(final ThemedReactContext reactContext) {
+
         final MyMojiInputLayout mojiInputLayout = new MyMojiInputLayout(reactContext);
 
+        UIManagerModule uiManager = reactContext.getNativeModule(UIManagerModule.class);
+        final UIImplementation uiImplementation = uiManager.getUIImplementation();
         mojiInputLayout.setSendLayoutClickListener(new MojiInputLayout.SendClickListener() {
             @Override
             public boolean onClick(final String html, Spanned spanned) {
@@ -136,19 +170,20 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
             });
 
         mojiInputLayout.setRnUpdateListener(new MojiInputLayout.RNUpdateListener() {
-
-            Method m;
+            MyShadowNode node;
             @Override
             public void needsUpdate() {
+                mojiInputLayout.requestLayout();
+
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
 
-                        if (m == null) {
+                        if (node ==null){
                             try {
-                                m = CSSNode.class.getDeclaredMethod("markHasNewLayout");
-                                m.setAccessible(true);
-                            } catch (Exception e) {
+                                node = (MyShadowNode) getShadowNode.invoke(uiImplementation, mojiInputLayout.getId());
+                            }
+                            catch (Exception e){
                                 e.printStackTrace();
                             }
                         }
@@ -158,7 +193,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
                                 while (parent != null) {
                                     if (parent.hasNewLayout()) {
                                         try {
-                                            m.invoke(parent);
+                                            markNewLayout.invoke(parent,mojiInputLayout.getId());
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -179,8 +214,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         return mojiInputLayout;
     }
     public LayoutShadowNode createShadowNodeInstance() {
-        node = new MyShadowNode();
-        return node;
+        return new MyShadowNode();
     }
     @Override
     protected void addEventEmitters(ThemedReactContext reactContext, MyMojiInputLayout view) {
@@ -200,7 +234,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         String html;
         final static String EVENT_NAME = "onSendPress";
         public SendEvent(int viewTag,String html){
-            super(viewTag, SystemClock.uptimeMillis());
+            super(viewTag);
             this.html = html;
         }
         @Override
@@ -220,7 +254,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         String url;
         final static String EVENT_NAME = "onHyperMojiPress";
         public HyperMojiEvent(int viewTag,String url){
-            super(viewTag, SystemClock.uptimeMillis());
+            super(viewTag);
             this.url = url;
         }
         @Override
@@ -238,7 +272,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
     public static class CameraEvent extends Event<CameraEvent>{
         final static String EVENT_NAME = "onCameraPress";
         public CameraEvent(int viewTag){
-            super(viewTag, SystemClock.uptimeMillis());
+            super(viewTag);
         }
         @Override
         public String getEventName() {

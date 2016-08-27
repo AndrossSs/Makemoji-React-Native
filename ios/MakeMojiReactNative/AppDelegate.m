@@ -11,7 +11,6 @@
 
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
-#import "MakemojiSDK.h"
 
 @implementation AppDelegate
 
@@ -32,7 +31,6 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [MakemojiSDK setSDKKey:@"bfd3eea60abad87d378f87939ef3a116e8b23a35"];
   return YES;
 }
 
