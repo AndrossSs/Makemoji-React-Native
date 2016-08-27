@@ -72,6 +72,7 @@ public class ReactMojiTextView extends ReactTextViewManager {
     public ReactTextShadowNode createShadowNodeInstance() {
         node = new MyReactTextShadowNode(false);
         return node;
+
     }
 
     @Override
