@@ -27,7 +27,6 @@ import csslayout.MyShadowNode;
  * Created by s_baa on 8/6/2016.
  */
 public class ReactMojiTextView extends ReactTextViewManager {
-    MyReactTextShadowNode node;
     EventDispatcher eventDispatcher;
     @Override
     public String getName() {
@@ -51,27 +50,29 @@ public class ReactMojiTextView extends ReactTextViewManager {
     }
     @ReactProp(name = "html")
     public void setHtml(ReactTextView view, @Nullable String html) {
-        if (html!=null) {
-            view.setTextSize(TypedValue.COMPLEX_UNIT_PX,node.getFontSize());
+        if (html!=null && !html.equals("__VOID__")) {//prop can't be empty
+            view.setTag(R.id._makemoji_rn_html_tag_id,html);
             Moji.setText(html, view, true);
         }
     }
     @ReactProp(name = "plaintext")
     public void setPlainText(ReactTextView view, @Nullable String plaintext) {
-        if (plaintext!=null)
+        if (plaintext!=null && !plaintext.equals("__VOID__"))
             Moji.setText(Moji.plainTextToSpanned(plaintext),view);
     }
     @ReactProp(name = "textSize", defaultFloat=0f)
     public void setTextSize(ReactTextView view, float textSize) {
         Log.d(getName(),"text size " + textSize);
-        if (textSize!=0f)
+        if (textSize!=0f) {
             view.setTextSize(textSize);
+            if (view.getTag(R.id._makemoji_rn_html_tag_id)!=null)
+                Moji.setText((String)view.getTag(R.id._makemoji_rn_html_tag_id),view,true);
+        }
     }
 
     @Override
     public ReactTextShadowNode createShadowNodeInstance() {
-        node = new MyReactTextShadowNode(false);
-        return node;
+       return new MyReactTextShadowNode(false);
 
     }
 

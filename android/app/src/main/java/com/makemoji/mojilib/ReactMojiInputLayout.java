@@ -6,10 +6,13 @@ import android.support.annotation.Nullable;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewParent;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.csslayout.CSSNode;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.LayoutShadowNode;
@@ -26,6 +29,7 @@ import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.views.text.ReactTextView;
+import com.facebook.react.views.textinput.ReactEditText;
 import com.makemoji.mojilib.HyperMojiListener;
 import com.makemoji.mojilib.Moji;
 import com.makemoji.mojilib.MojiInputLayout;
@@ -55,12 +59,6 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         }
         try{
         if (getShadowNode==null){
-            Class[] cArg = new Class[1];
-            cArg[0] = Integer.class;
-            Class c = UIImplementation.class;
-            Method [] methods = c.getDeclaredMethods();
-            Method m = methods[36];
-            Class [] params = m.getParameterTypes();
             getShadowNode = UIImplementation.class.getDeclaredMethod("resolveShadowNode",int.class);
             getShadowNode.setAccessible(true);
         }
@@ -141,7 +139,25 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         view.minimumSendLength = length;
         if (length==0) view.sendLayout.setEnabled(view.editText.getText().length()>=length);
     }
+    @ReactProp(name ="outsideEditText")
+    public void setOutsideEditText(final MyMojiInputLayout view, @Nullable String tag){
+        Log.d(getName(),"edit tag "+tag);
+        if (tag==null || tag.isEmpty()){
+            view.detachMojiEditText();
+            view.requestRnUpdate();
+            return;
+        }
+        ViewParent parent = view.getParent();
+        while (parent!=null && parent instanceof View && parent.getParent() !=null && parent.getParent() instanceof View){
+            parent = parent.getParent();
+        }
+        if (parent!=null) {
+            EditText et = (EditText) ((View) parent).findViewWithTag(tag);
+            if (et!=null)     view.attatchEditText(et);
+            view.requestRnUpdate();
+        }
 
+    }
     @Override
     protected MyMojiInputLayout createViewInstance(final ThemedReactContext reactContext) {
 
@@ -174,6 +190,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
             @Override
             public void needsUpdate() {
                 mojiInputLayout.requestLayout();
+
 
                 Runnable r = new Runnable() {
                     @Override
@@ -246,7 +263,7 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         public void dispatch(RCTEventEmitter rctEventEmitter) {
             WritableMap eventData = Arguments.createMap();
             eventData.putString("html", html);
-            eventData.putString("plainText", Moji.htmlToPlainText(html));
+            eventData.putString("plaintext", Moji.htmlToPlainText(html));
             rctEventEmitter.receiveEvent(getViewTag(),getEventName(),eventData);
         }
     }

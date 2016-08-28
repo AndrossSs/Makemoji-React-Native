@@ -441,6 +441,8 @@ const TextInput = React.createClass({
          * @platform android
          */
         inlineImagePadding: PropTypes.number,
+        onHtmlGenerated:PropTypes.func,
+        finderTag:PropTypes.string
     },
 
     /**
@@ -672,6 +674,8 @@ _renderAndroid: function() {
             selectTextOnFocus={this.props.selectTextOnFocus}
             returnKeyType={this.props.returnKeyType}
             returnKeyLabel={this.props.returnKeyLabel}
+            onHtmlGenerated={(e) => this.props.onHtmlGenerated(e.nativeEvent)}
+            finderTag={this.props.finderTag}
         />;
 
     return (
@@ -748,6 +752,14 @@ _onBlur: function(event: Event) {
 _onTextInput: function(event: Event) {
     this.props.onTextInput && this.props.onTextInput(event);
 },
+
+requestHtml: function (){
+    UIManager.dispatchViewManagerCommand(
+        ReactNative.findNodeHandle(this),
+        404,[]
+    );
+}
+
 });
 
 var styles = StyleSheet.create({

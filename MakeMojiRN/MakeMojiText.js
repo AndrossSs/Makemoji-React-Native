@@ -32,7 +32,8 @@ const viewConfig = {
         ellipsizeMode: true,
         allowFontScaling: true,
         selectable: true,
-        html:' ',
+        html:'__VOID__',
+        plaintext:'__VOID__'
     }),
     uiViewClassName: 'ReactMojiText',
 };

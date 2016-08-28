@@ -2,25 +2,29 @@ import { PropTypes } from 'react';
 import React, { Component } from 'react';
 import { requireNativeComponent, View } from 'react-native';
 
+const UIManager = require('UIManager');
 class MakeMojiTextInput extends React.Component {
     constructor(props) {
         super(props);
+        this.attatchEditText = this.attatchEditText.bind(this);
+        this.detatchEditText = this.detatchEditText.bind(this);
     }
     onSendPress: Function = (e) => {
         if (this.props.onSendPress) {
-            this.props.onSendPress(e);
+            this.props.onSendPress(e.nativeEvent);
         }
     };
     onCameraPress: Function = (e) => {
         if (this.props.onCameraPress) {
-            this.props.onCameraPress(e);
+            this.props.onCameraPress(e.nativeEvent);
         }
     };
     onHyperMojiPress: Function = (e) => {
         if (this.props.onHyperMojiPress) {
-            this.props.onHyperMojiPress(e);
+            this.props.onHyperMojiPress(e.nativeEvent);
         }
     };
+
 
     render() {
         return <RCTMojiInputLayout {...this.props} onHyperMojiPress={this.onHyperMojiPress}
@@ -44,7 +48,8 @@ MakeMojiTextInput.propTypes = {
     headerTextColor:React.PropTypes.string,
 
     alwaysShowEmojiBar:React.PropTypes.bool,
-    minSendLength:React.PropTypes.number
+    minSendLength:React.PropTypes.number,
+    outsideEditText:React.PropTypes.string
 };
 
 module.exports = requireNativeComponent(`RCTMojiInputLayout`, MakeMojiTextInput);

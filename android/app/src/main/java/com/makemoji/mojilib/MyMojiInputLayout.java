@@ -1,6 +1,7 @@
 package com.makemoji.mojilib;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.makemoji.mojilib.MojiInputLayout;
@@ -26,4 +27,7 @@ public class MyMojiInputLayout extends MojiInputLayout{
         ResizeableLL.SNAP_DURATION = 0;
         super.setRnUpdateListener(listener);
     }
+
+
+
 }
