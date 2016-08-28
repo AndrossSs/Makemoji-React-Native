@@ -66,6 +66,7 @@ public class ReactMakeMojiTextInputManager extends ReactTextInputManager {
             case 404:
                 eventDispatcher.dispatchEvent(new HtmlEvent(reactEditText.getId(),
                         Moji.toHtml(reactEditText.getText())));
+                if (args.getBoolean(0))Moji.setText("",reactEditText,true);
                 break;
             default:
                 super.receiveCommand(reactEditText,commandId,args);

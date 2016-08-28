@@ -753,10 +753,10 @@ _onTextInput: function(event: Event) {
     this.props.onTextInput && this.props.onTextInput(event);
 },
 
-requestHtml: function (){
+requestHtml: function (clear){
     UIManager.dispatchViewManagerCommand(
         ReactNative.findNodeHandle(this),
-        404,[]
+        404,[clear]
     );
 }
 

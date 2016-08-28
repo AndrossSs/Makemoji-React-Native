@@ -55,6 +55,7 @@ class MakeMojiReactNative extends Component {
           </TouchableHighlight>
           <ListView style={{flex:1,alignSelf:'stretch'}}
                     dataSource={this.state.dataSource}
+                    enableEmptySections={true}
                     renderRow={(rowData) => <MakeMojiText  textSize={14.0} onHyperMojiPress={this.log} style={styles.instructions} html={rowData}/>}
           />
         <MakeMojiTextInput outsideEditText={this.state.outsideEditText} ref={'mojiInput'} style={styles.moji} minSendLength={0} alwaysShowEmojiBar={true} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
@@ -65,7 +66,7 @@ class MakeMojiReactNative extends Component {
     );
   }
   genHtml(){
-      this.refs.topEditText.requestHtml();
+      this.refs.topEditText.requestHtml(true);//true to clear
   }
   sendPressed(sendObject){
       console.log('send pressed', sendObject.nativeEvent);
@@ -104,8 +105,10 @@ const styles = StyleSheet.create({
       fontSize:20
   },
   moji:{
-    flex:1,
-    alignSelf: 'stretch',
+
+      height:100,
+      justifyContent: 'flex-end',
+    alignSelf: 'stretch'
   }
 });
 

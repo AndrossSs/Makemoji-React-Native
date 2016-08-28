@@ -17,6 +17,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.LayoutShadowNode;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
+import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.ReactShadowNode;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -190,6 +191,8 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
             @Override
             public void needsUpdate() {
                 mojiInputLayout.requestLayout();
+                mojiInputLayout.measure(View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getWidth(), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getHeight(), View.MeasureSpec.EXACTLY));
 
 
                 Runnable r = new Runnable() {
@@ -205,6 +208,12 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
                             }
                         }
                             if (node != null) {
+                                node.setWidth(PixelUtil.toDIPFromPixel(mojiInputLayout.getWidth()));
+                                int height = mojiInputLayout.horizontalLayout.getHeight()+mojiInputLayout.topScroller.getHeight() +
+                                        (mojiInputLayout.pages.size()>0 ? mojiInputLayout.getPageFrame().getHeight():0);
+
+                                node.setHeight(PixelUtil.toDIPFromPixel(height));
+                                Log.d(getName(),mojiInputLayout.getWidth()+ " " + mojiInputLayout.getHeight() + " " + mojiInputLayout.getPageFrame().getHeight());
                                 if (node.hasNewLayout()) node.markLayoutSeen();
                                 ReactShadowNode parent = node.getParent();
                                 while (parent != null) {
