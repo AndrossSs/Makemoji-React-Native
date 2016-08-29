@@ -24,7 +24,6 @@ public class MyMojiInputLayout extends MojiInputLayout{
     }
     @Override
     public void setRnUpdateListener(RNUpdateListener listener){
-        ResizeableLL.SNAP_DURATION = 0;
         super.setRnUpdateListener(listener);
     }
 

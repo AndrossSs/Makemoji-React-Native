@@ -3,6 +3,7 @@ package com.makemoji.mojilib;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.facebook.react.bridge.Arguments;
@@ -34,7 +35,7 @@ public class ReactMakeMojiTextInputManager extends ReactTextInputManager {
 
     @Override
     public ReactEditText createViewInstance(ThemedReactContext context) {
-        ReactEditText editText = new ReactMojiEditText(context);
+        final ReactEditText editText = new ReactMojiEditText(context);
         int inputType = editText.getInputType();
         editText.setInputType(inputType & (~InputType.TYPE_TEXT_FLAG_MULTI_LINE));
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -42,6 +43,12 @@ public class ReactMakeMojiTextInputManager extends ReactTextInputManager {
                 TypedValue.COMPLEX_UNIT_PX,
                 (int) Math.ceil(PixelUtil.toPixelFromSP(ViewDefaults.FONT_SIZE_SP)));
         editText.setTag("defaultTag");
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editText.requestFocusFromJS();
+            }
+        });
         return editText;
     }
 
@@ -64,6 +71,7 @@ public class ReactMakeMojiTextInputManager extends ReactTextInputManager {
             @javax.annotation.Nullable ReadableArray args) {
         switch (commandId) {
             case 404:
+                if (args.getBoolean(1)) MojiInputLayout.onSaveInputToRecentAndsBackend(reactEditText.getText());
                 eventDispatcher.dispatchEvent(new HtmlEvent(reactEditText.getId(),
                         Moji.toHtml(reactEditText.getText())));
                 if (args.getBoolean(0))Moji.setText("",reactEditText,true);

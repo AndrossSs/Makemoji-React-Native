@@ -674,7 +674,7 @@ _renderAndroid: function() {
             selectTextOnFocus={this.props.selectTextOnFocus}
             returnKeyType={this.props.returnKeyType}
             returnKeyLabel={this.props.returnKeyLabel}
-            onHtmlGenerated={(e) => this.props.onHtmlGenerated(e.nativeEvent)}
+            onHtmlGenerated={(e) => this.props.onHtmlGenerated(e)}
             finderTag={this.props.finderTag}
         />;
 
@@ -753,10 +753,10 @@ _onTextInput: function(event: Event) {
     this.props.onTextInput && this.props.onTextInput(event);
 },
 
-requestHtml: function (clear){
+requestHtml: function (clear,sendAnalytics){
     UIManager.dispatchViewManagerCommand(
         ReactNative.findNodeHandle(this),
-        404,[clear]
+        404,[clear,sendAnalytics]
     );
 }
 

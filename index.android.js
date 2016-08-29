@@ -34,8 +34,9 @@ class MakeMojiReactNative extends Component {
     }
   render() {
     return (
-      <View style={styles.container}>
-          <MakeMojiEditTextAndroid style={styles.editText} finderTag={'topEditText'} ref={'topEditText'} onHtmlGenerated={this.log}/>
+      <View keyboardShouldPersistTaps={false} style={styles.container}>
+          <MakeMojiEditTextAndroid keyboardShouldPersistTaps={false} style={styles.editText} finderTag={'topEditText'} ref={'topEditText'} onHtmlGenerated={this.sendPressed.bind(this)}/>
+          <TextInput blurOnSubmit={false} keyboardShouldPersistTaps={false} style={styles.editText} />
 
           <TouchableHighlight onPress={this.genHtml.bind(this)}>
              <Text style={styles.welcome} selectable={true}>
@@ -58,7 +59,7 @@ class MakeMojiReactNative extends Component {
                     enableEmptySections={true}
                     renderRow={(rowData) => <MakeMojiText  textSize={14.0} onHyperMojiPress={this.log} style={styles.instructions} html={rowData}/>}
           />
-        <MakeMojiTextInput outsideEditText={this.state.outsideEditText} ref={'mojiInput'} style={styles.moji} minSendLength={0} alwaysShowEmojiBar={true} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
+        <MakeMojiTextInput outsideEditText={this.state.outsideEditText} ref={'mojiInput'} style={styles.moji} minSendLength={0} alwaysShowEmojiBar={false} onSendPress={this.sendPressed.bind(this)} onHyperMojiPress={this.log} onCameraPress={this.log}/>
           <Text style={styles.instructions}>
               below3
           </Text>
@@ -66,7 +67,7 @@ class MakeMojiReactNative extends Component {
     );
   }
   genHtml(){
-      this.refs.topEditText.requestHtml(true);//true to clear
+      this.refs.topEditText.requestHtml(true,true);//args:should clear input;should send text to analytics
   }
   sendPressed(sendObject){
       console.log('send pressed', sendObject.nativeEvent);

@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -142,7 +143,6 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
     }
     @ReactProp(name ="outsideEditText")
     public void setOutsideEditText(final MyMojiInputLayout view, @Nullable String tag){
-        Log.d(getName(),"edit tag "+tag);
         if (tag==null || tag.isEmpty()){
             view.detachMojiEditText();
             view.requestRnUpdate();
@@ -154,11 +154,27 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
         }
         if (parent!=null) {
             EditText et = (EditText) ((View) parent).findViewWithTag(tag);
-            if (et!=null)     view.attatchEditText(et);
+            if (et!=null) {
+                view.attatchEditText(et);
+                view.setTag(R.id._makemoji_request_layout_id,true);
+            }
             view.requestRnUpdate();
         }
 
     }
+    @ReactProp(name ="channel")
+    public void setChannel(final MyMojiInputLayout view, @Nullable String channel){
+        Moji.setChannel(channel);
+    }
+    @Override
+    public void receiveCommand(
+            MyMojiInputLayout reactEditText,
+            int commandId,
+            @javax.annotation.Nullable ReadableArray args) {
+        Log.d(getName(),"command "+commandId);
+    }
+
+int frameH;
     @Override
     protected MyMojiInputLayout createViewInstance(final ThemedReactContext reactContext) {
 
@@ -166,6 +182,21 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
 
         UIManagerModule uiManager = reactContext.getNativeModule(UIManagerModule.class);
         final UIImplementation uiImplementation = uiManager.getUIImplementation();
+        final MojiEditText et = (MojiEditText) mojiInputLayout.findViewById(R.id._mm_edit_text);
+        //et.setFocusableInTouchMode(false);
+        //MojiEditText.REACT_NATIVE = true;
+        et.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mojiInputLayout.showKeyboard();
+            }
+        });
+        et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus)  et.clearFocus();
+            }
+        });
         mojiInputLayout.setSendLayoutClickListener(new MojiInputLayout.SendClickListener() {
             @Override
             public boolean onClick(final String html, Spanned spanned) {
@@ -191,8 +222,8 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
             @Override
             public void needsUpdate() {
                 mojiInputLayout.requestLayout();
-                mojiInputLayout.measure(View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getWidth(), View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getHeight(), View.MeasureSpec.EXACTLY));
+                //mojiInputLayout.measure(View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getWidth(), View.MeasureSpec.EXACTLY),
+                  //      View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getHeight(), View.MeasureSpec.EXACTLY));
 
 
                 Runnable r = new Runnable() {
@@ -209,11 +240,15 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
                         }
                             if (node != null) {
                                 node.setWidth(PixelUtil.toDIPFromPixel(mojiInputLayout.getWidth()));
-                                int height = mojiInputLayout.horizontalLayout.getHeight()+mojiInputLayout.topScroller.getHeight() +
-                                        (mojiInputLayout.pages.size()>0 ? mojiInputLayout.getPageFrame().getHeight():0);
-
+                                int height = (mojiInputLayout.horizontalLayout.getVisibility()==View.VISIBLE? mojiInputLayout.horizontalLayout.getHeight():0)
+                                        +(mojiInputLayout.topScroller.getVisibility()==View.VISIBLE?
+                                        (int)PixelUtil.toPixelFromDIP(45):0) +
+                                     //    mojiInputLayout.topScroller.getMeasuredHeight() : 0) +
+                                        (mojiInputLayout.pages.size()>0 ?
+                                                (int)  PixelUtil.toPixelFromDIP(250):0);
+                                                //mojiInputLayout.getPageFrame().getHeight():0);
                                 node.setHeight(PixelUtil.toDIPFromPixel(height));
-                                Log.d(getName(),mojiInputLayout.getWidth()+ " " + mojiInputLayout.getHeight() + " " + mojiInputLayout.getPageFrame().getHeight());
+                               // Log.d(getName(),mojiInputLayout.getWidth()+ " " + mojiInputLayout.getHeight() + " " + mojiInputLayout.getPageFrame().getHeight());
                                 if (node.hasNewLayout()) node.markLayoutSeen();
                                 ReactShadowNode parent = node.getParent();
                                 while (parent != null) {
@@ -229,7 +264,6 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
                                 }
                                 node.markUpdated();
                             }
-                            Log.d(getName(), "markUpdated");
                     }
 
                 };
