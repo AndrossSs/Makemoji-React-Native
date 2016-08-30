@@ -30,13 +30,13 @@ to pressing the send button, to populating the list, rendered by MakeMojiText wi
 
 If you want to use an input target other than MakeMojiTextInput, things are a bit trickier. A MakeMojiEditTextAndroid is required
 to ensure keyboard, backspace, and copy paste compatibility. Assign the view a static unique identifier in the finderTag prop.
-Then, after mount, assign MakeMojiTextInput the outsideEditText with the same finderTag value. Set outsideEditText={null} to reverse
+Then, after mount, assign MakeMojiTextInput the prop outsideEditText with the same finderTag value. Set outsideEditText={null} to reverse
 this.
 
 To get the {html,plaintext} value of the MakeMojiEditTextAndroid, call requestHtml(shouldClear,shouldSendAnalytics) on the view. 
 The result will be returned asynchronously through the function given to the onHtmlGenerated prop.
 
 ## Customization
-MakeMojiTextInput and MakeMojiTextInput are copy paste extensions of the Text and TextInput components and respond to standard styling
+MakeMojiText and MakeMojiTextInput are copy paste extensions of the Text and TextInput components and respond to standard styling
 and custmization. Descriptions of the styling available for MakeMojiTextInput can be found next to the proptypes of
 [MakeMojiTextInput.js](MakeMojiRN/MakeMojiTextInput.js). Any other styling is available on request.
