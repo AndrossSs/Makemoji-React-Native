@@ -308,6 +308,10 @@ if (Touchable.TOUCH_TARGET_DEBUG && newProps.onPress) {
 if (this.context.isInAParentText) {
     return <RCTVirtualText {...newProps} />;
 } else {
+    var f = function(e){
+        this.props.onHyperMojiPress(e.nativeEvent);
+    };
+    newProps = {...newProps, onHyperMojiPress:f.bind(this)};
     return <ReactMojiText {...newProps} />;
 }
 },

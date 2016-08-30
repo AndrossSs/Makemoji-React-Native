@@ -1,32 +1,55 @@
 import { PropTypes } from 'react';
 import React, { Component } from 'react';
-import { requireNativeComponent, View } from 'react-native';
+import { requireNativeComponent, View, BackAndroid } from 'react-native';
+const ReactNative = require('react/lib/ReactNative');
 
 const UIManager = require('UIManager');
-class MakeMojiTextInput extends React.Component {
+var NativeComponent = requireNativeComponent('RCTMojiInputLayout', null);
+export  default class MakeMojiTextInput extends React.Component {
     constructor(props) {
         super(props);
+        this.state={canGoBack:false};
+        this.canGoBack = this.canGoBack.bind(this);
+        this.onCanGoBackChanged = this.onCanGoBackChanged.bind(this);
+        this.onBackPressed = this.onBackPressed.bind(this);
+        this.onSendPress = this.onSendPress.bind(this);
+        this.onCameraPress = this.onCameraPress.bind(this);
+        this.onHyperMojiPress = this.onHyperMojiPress.bind(this);
+
+
     }
-    onSendPress: Function = (e) => {
+    onSendPress(e) {
         if (this.props.onSendPress) {
-            this.props.onSendPress(e);
+            this.props.onSendPress(e.nativeEvent);
         }
-    };
-    onCameraPress: Function = (e) => {
+    }
+    onCameraPress(e){
         if (this.props.onCameraPress) {
-            this.props.onCameraPress(e);
+            this.props.onCameraPress(e.nativeEvent);
         }
     };
-    onHyperMojiPress: Function = (e) => {
+    onHyperMojiPress(e) {
         if (this.props.onHyperMojiPress) {
-            this.props.onHyperMojiPress(e);
+            this.props.onHyperMojiPress(e.nativeEvent);
         }
     };
 
+    onCanGoBackChanged(e){
+        this.setState({canGoBack:e.nativeEvent.canGoBack});
+    }
+    canGoBack(){
+        return this.state.canGoBack;
+    }
+    onBackPressed(){
+        UIManager.dispatchViewManagerCommand(
+            ReactNative.findNodeHandle(this),
+            85,[]
+        );
+    }
 
     render() {
-        return <RCTMojiInputLayout {...this.props} onHyperMojiPress={this.onHyperMojiPress}
-                                   onSendPress={this.onSendPress} onCameraPress={this.onCameraPress} />;
+        return <NativeComponent {...this.props} onHyperMojiPress={this.onHyperMojiPress}
+                                   onSendPress={this.onSendPress} onCameraPress={this.onCameraPress} onCanGoBackChanged={this.onCanGoBackChanged} />;
     }
 }
 MakeMojiTextInput.propTypes = {
@@ -51,4 +74,4 @@ MakeMojiTextInput.propTypes = {
     channel:React.PropTypes.string//The Moji.setChannel to filter available categories
 };
 
-module.exports = requireNativeComponent(`RCTMojiInputLayout`, MakeMojiTextInput);
+module.exports = MakeMojiTextInput

@@ -1,9 +1,7 @@
 package com.makemoji.mojilib;
 
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.TypedValue;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -21,12 +19,11 @@ import com.facebook.react.views.text.ReactTextViewManager;
 import java.util.Map;
 
 import csslayout.MyReactTextShadowNode;
-import csslayout.MyShadowNode;
 
 /**
  * Created by s_baa on 8/6/2016.
  */
-public class ReactMojiTextView extends ReactTextViewManager {
+public class ReactMojiTextViewManager extends ReactTextViewManager {
     EventDispatcher eventDispatcher;
     @Override
     public String getName() {
@@ -88,7 +85,7 @@ public class ReactMojiTextView extends ReactTextViewManager {
                 );
     }
 
-    public static class HyperMojiEvent extends Event<ReactMojiInputLayout.HyperMojiEvent>{
+    public static class HyperMojiEvent extends Event<ReactMojiInputLayoutManager.HyperMojiEvent>{
         String url;
         final static String EVENT_NAME = "onHyperMojiPress";
         public HyperMojiEvent(int viewTag,String url){

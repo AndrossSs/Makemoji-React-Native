@@ -674,7 +674,7 @@ _renderAndroid: function() {
             selectTextOnFocus={this.props.selectTextOnFocus}
             returnKeyType={this.props.returnKeyType}
             returnKeyLabel={this.props.returnKeyLabel}
-            onHtmlGenerated={(e) => this.props.onHtmlGenerated(e)}
+            onHtmlGenerated={(e) => this.props.onHtmlGenerated(e.nativeEvent)}
             finderTag={this.props.finderTag}
         />;
 

@@ -4,19 +4,20 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
   ViewPagerAndroid,
-    TouchableHighlight,
-    ListView,
-TextInput
+  TouchableHighlight,
+  ListView,
+  TextInput,
+  BackAndroid
 
 } from 'react-native';
-import MakeMojiTextInput from './MakeMojiRN/MakeMojiTextInput'
+var MakeMojiTextInput = require('./MakeMojiRN/MakeMojiTextInput');// MakeMojiTextInput from './MakeMojiRN/MakeMojiTextInput'
 import MakeMojiEditTextAndroid from './MakeMojiRN/MakeMojiEditTextAndroid'
 import MakeMojiText from './MakeMojiRN/MakeMojiText'
 import TimerMixin from 'react-timer-mixin';
@@ -30,7 +31,17 @@ class MakeMojiReactNative extends Component {
     this.state = {htmlMessages:[],
     dataSource:ds.cloneWithRows([]),
     outsideEditText:' '};
+        BackAndroid.addEventListener('hardwareBackPress', () => {
+            if (this.refs.mojiInput.canGoBack()){
+                this.refs.mojiInput.onBackPressed();
+                return true;
+            }
+            return false;
+        });
 
+    }
+    componentDidMount(){
+        //this.setState({outsideEditText:'topEditText'});
     }
   render() {
     return (
@@ -70,8 +81,8 @@ class MakeMojiReactNative extends Component {
       this.refs.topEditText.requestHtml(true,true);//args:should clear input;should send text to analytics
   }
   sendPressed(sendObject){
-      console.log('send pressed', sendObject.nativeEvent);
-      var htmlMessages = [...this.state.htmlMessages,sendObject.nativeEvent.html];
+      console.log('send pressed', sendObject);
+      var htmlMessages = [...this.state.htmlMessages,sendObject.html];
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       this.setState({htmlMessages:htmlMessages,dataSource:ds.cloneWithRows(htmlMessages)});
   }

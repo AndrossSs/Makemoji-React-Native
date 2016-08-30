@@ -45,11 +45,11 @@ import csslayout.MyShadowNode;
 /**
  * Created by s_baa on 8/6/2016.
  */
-public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
+public class ReactMojiInputLayoutManager extends ViewGroupManager<MyMojiInputLayout> {
     EventDispatcher eventDispatcher;
     Method markNewLayout, getShadowNode;
 
-    public ReactMojiInputLayout(){
+    public ReactMojiInputLayoutManager(){
         super();
         if (markNewLayout == null) {
             try {
@@ -168,10 +168,18 @@ public class ReactMojiInputLayout extends ViewGroupManager<MyMojiInputLayout> {
     }
     @Override
     public void receiveCommand(
-            MyMojiInputLayout reactEditText,
+            MyMojiInputLayout mojiInputLayout,
             int commandId,
             @javax.annotation.Nullable ReadableArray args) {
         Log.d(getName(),"command "+commandId);
+        switch (commandId){
+            case 85:
+                mojiInputLayout.onBackPressed();
+                mojiInputLayout.requestRnUpdate();
+                break;
+            default:
+                super.receiveCommand(mojiInputLayout,commandId,args);
+        }
     }
 
 int frameH;
@@ -222,8 +230,6 @@ int frameH;
             @Override
             public void needsUpdate() {
                 mojiInputLayout.requestLayout();
-                //mojiInputLayout.measure(View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getWidth(), View.MeasureSpec.EXACTLY),
-                  //      View.MeasureSpec.makeMeasureSpec(mojiInputLayout.getHeight(), View.MeasureSpec.EXACTLY));
 
 
                 Runnable r = new Runnable() {
@@ -243,7 +249,7 @@ int frameH;
                                 int height = (mojiInputLayout.horizontalLayout.getVisibility()==View.VISIBLE? mojiInputLayout.horizontalLayout.getHeight():0)
                                         +(mojiInputLayout.topScroller.getVisibility()==View.VISIBLE?
                                         (int)PixelUtil.toPixelFromDIP(45):0) +
-                                     //    mojiInputLayout.topScroller.getMeasuredHeight() : 0) +
+                                     //    mojiInputLayout.topScroller.getMeasuredHeight() : 0) + //height is randomly 0 because react native
                                         (mojiInputLayout.pages.size()>0 ?
                                                 (int)  PixelUtil.toPixelFromDIP(250):0);
                                                 //mojiInputLayout.getPageFrame().getHeight():0);
@@ -262,6 +268,7 @@ int frameH;
                                     }
                                     parent = parent.getParent();
                                 }
+                                eventDispatcher.dispatchEvent(new CanGoBackEvent(mojiInputLayout.getId(),mojiInputLayout.canHandleBack()));
                                 node.markUpdated();
                             }
                     }
@@ -286,7 +293,8 @@ int frameH;
         return MapBuilder.of(
                 SendEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onSendPress"),
                 HyperMojiEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onHyperMojiPress"),
-                CameraEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onCameraPress")
+                CameraEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onCameraPress"),
+                CanGoBackEvent.EVENT_NAME, (Object) MapBuilder.of("registrationName", "onCanGoBackChanged")
 
                 );
     }
@@ -342,6 +350,25 @@ int frameH;
         @Override
         public void dispatch(RCTEventEmitter rctEventEmitter) {
             WritableMap eventData = Arguments.createMap();
+            rctEventEmitter.receiveEvent(getViewTag(),getEventName(),eventData);
+        }
+    }
+    public static class CanGoBackEvent extends Event<CanGoBackEvent>{
+        final static String EVENT_NAME = "onCanGoBackChanged";
+        boolean canGoBack;
+        public CanGoBackEvent(int viewTag,boolean canGoBack){
+            super(viewTag);
+            this.canGoBack = canGoBack;
+        }
+        @Override
+        public String getEventName() {
+            return EVENT_NAME;
+        }
+
+        @Override
+        public void dispatch(RCTEventEmitter rctEventEmitter) {
+            WritableMap eventData = Arguments.createMap();
+            eventData.putBoolean("canGoBack",canGoBack);
             rctEventEmitter.receiveEvent(getViewTag(),getEventName(),eventData);
         }
     }

@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Created by s_baa on 8/26/2016.
  */
-public class ReactMakeMojiTextInputManager extends ReactTextInputManager {
+public class ReactMojiEditTextManager extends ReactTextInputManager {
     EventDispatcher eventDispatcher;
     @Override
     public String getName() {
