@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 /**
  * Created by s_baa on 8/27/2016.
  */
-public class ReactMojiEditText extends ReactEditText {
+public class ReactMojiEditText extends ReactEditText implements ISpecialInvalidate {
     public ReactMojiEditText(Context context) {
         super(context);
         init();
@@ -48,7 +48,7 @@ public class ReactMojiEditText extends ReactEditText {
     }
     private void init(){
         try {
-            mEditor = getClass().getSuperclass().getSuperclass().getDeclaredField("mEditor");
+            mEditor = getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("mEditor");
             mEditor.setAccessible(true);
             Class c  = mEditor.getType();
             invalidateTextDisplayList = c.getDeclaredMethod("invalidateTextDisplayList");
@@ -200,5 +200,10 @@ public class ReactMojiEditText extends ReactEditText {
     }
     protected void onSelectionChanged(int selStart, int selEnd) {
         // Log.d("met","selection " + selStart + " " +(selStart %3));
+    }
+
+    @Override
+    public void specialInvalidate() {
+        invalidateReflect();
     }
 }
