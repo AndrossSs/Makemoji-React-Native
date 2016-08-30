@@ -16,6 +16,11 @@ In your MainApplication.java add the MakeMojiReactPackage with your sdk key.
   };
 ```
 
+Add the latest version of the sdk to your app's build.gradle 
+
+[ ![MakeMoji SDK Version](https://api.bintray.com/packages/mm/maven/com.makemoji%3Amakemoji-sdk-android/images/download.svg) ](https://bintray.com/mm/maven/com.makemoji%3Amakemoji-sdk-android/_latestVersion)
+```groovy compile "com.makemoji:makemoji-sdk-android:x.x.xxx" ```
+
 Copy the folder [MakeMojiRN](MakeMojiRN) for the js files.
 
 ## Usage
